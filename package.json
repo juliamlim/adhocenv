@@ -4,8 +4,16 @@
   "description": "Scripts to set up ad hoc testing environments for git projects.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node index.js"
   },
-  "contributors": [ "Julia Lim <juliamlim@hotmail.com>" ],
-  "license": "ISC"
+  "contributors": [
+    "Julia Lim <juliamlim@hotmail.com>"
+  ],
+  "bin": {
+    "ahenv": "index.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2"
+  }
 }
