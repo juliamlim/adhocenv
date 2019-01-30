@@ -1,0 +1,11 @@
+{
+  "name": "adhocenv",
+  "version": "0.0.0",
+  "description": "Scripts to set up ad hoc testing environments for git projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "contributors": [ "Julia Lim <juliamlim@hotmail.com>" ],
+  "license": "ISC"
+}
