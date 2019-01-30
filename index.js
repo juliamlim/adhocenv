@@ -12,23 +12,27 @@ const flags = process.argv.slice(3).reduce((json, flag) => {
 
 log([cmd, flags], 'red');
 
+// Require and execute the command accordingly
+switch (cmd) {
+  case 'init':
+  case 'deploy':
+  case 'remove':
+  case 'teardown':
+    require()
+
+    log(`Start ${cmd} process`, 'green');
+    return require(`./scripts/${cmd}`)(config);
+  case 'help':
+    return require('./scripts/help')();
+  default:
+    log(`There is no script available for ${cmd} \n`, 'yellow');
+    return require('./scripts/help')();
+}
+
 // // Configure the data needed in the script
 // require('./scripts/config')(cmd, flags).then((config) => {
 
-//   // Require and execute the command accordingly
-//   switch (cmd) {
-//     case 'init':
-//     case 'deploy':
-//     case 'remove':
-//     case 'teardown':
-//       log(`Start ${cmd} process`, 'green');
-//       return require(`./scripts/${cmd}`)(config);
-//     case 'help':
-//       return require('./scripts/help')();
-//     default:
-//       log(`There is no script available for ${cmd} \n`, 'yellow');
-//       return require('./scripts/help')();
-//   }
+
 // }).then(() => {
 
 //   // When script complete notify user and exit out of process
