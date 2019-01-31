@@ -32,10 +32,8 @@ require('./scripts/config')(cmd, flags).then((config) => {
   // When script complete notify user and exit out of process
   if (cmd !== 'help') log(`Finished ${cmd} process`, 'blue');
   process.exit(0);
-
 }).catch((err) => {
 
   // If an error is caught kill the process
   die(err);
-
 });
