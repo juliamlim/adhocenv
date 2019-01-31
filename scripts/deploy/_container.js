@@ -10,7 +10,7 @@ module.exports = (config = {}) => {
 
   try {
     kubectl.execCheck('deployments', branch.name, { namespace }).then((res) => {
-      if (res.list.find((v) => v.includes(branch.name))) {
+      if (res.exists) {
         execSync(`kubectl set image deployment/${branch.name} ${branch.name}=${imagePath} ${namespaceFlag}`);
       } else {
         execSync(`kubectl run ${branch.name} --image=${imagePath} --port=${port} ${namespaceFlag}`);
@@ -18,6 +18,6 @@ module.exports = (config = {}) => {
       }
     });
   } catch (error) {
-    die(`There was an error deploying the image to gcp ${error}`);
+    die('There was an error deploying the image to gcp', error);
   }
 }

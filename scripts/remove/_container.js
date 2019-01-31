@@ -6,18 +6,13 @@ const kubectl = require('../../lib/kubectl');
 
 module.exports = (config = {}) => {
   const { namespace } = config;
-  const { branch, imagePath } = config;
+  const { branch } = config;
 
   try {
-    kubectl.execCheck('service', branch.name, { remove: `kubectl delete service ${branch.name}`, namespace });
-    kubectl.execCheck('deployment', branch.name, { remove: `kubectl delete deployment ${branch.name}`, namespace });
-    kubectl.execCheck('pods', branch.name, { namespace }).then((res) => {
-      const pod = res.list.find((v) => v.includes(branch.name));
-      if (pod) {
-        execSync(`kubectl delete pod ${pod} --namespace=${namespace}`);
-      }
-    });
+    kubectl.execCheck('service', branch.name, { remove: true, namespace });
+    kubectl.execCheck('deployment', branch.name, { remove: true, namespace });
+    kubectl.execCheck('pods', branch.name, { remove: true, namespace });
   } catch (error) {
-    die(`There was an error removing the branch ${error}`);
+    die('There was an error removing the branch from kubernetes', error);
   }
 }

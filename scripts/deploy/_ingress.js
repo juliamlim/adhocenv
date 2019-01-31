@@ -5,27 +5,36 @@ const { log, die } = require('../../lib/utils');
 const kubectl = require('../../lib/kubectl');
 
 module.exports = (config = {}) => {
-  const { host, branch } = config;
+  const { host = false, branch } = config;
   const { ingress } = config.kubectl;
   const namespaceFlag = `--namespace=${config.namespace}`;
+  let deployPaths = [ kubectl.ingressPath(branch.name) ];
 
   try {
+    // Get ingress json from kubectl on gcp
     const ingressJson = execSync(`kubectl get ingress ${ingress.name} -o=json ${namespaceFlag}`, { encoding: 'utf-8' });
+
+    // Grab rules from the ingress
     const rules = JSON.parse(ingressJson).spec.rules || [];
 
-    const deployRule = kubectl.ingressRule(config);
+    // Check for host rules or the first set of rules
+    const rule = (host ? rules.filter(r => r.host === host)[0] : rules.filter(r => typeof r.host === 'undefined')[0]) || [];
 
-    if ( rules.filter((r) => r.host === deployRule.host).length === 0 ) {
-      log(`Adding ${deployRule.host} path to ingress`);
-      rules.push(deployRule);
-    } else {
-      log(`Updating ${deployRule.host} path to ingress`);
+    // Grab path names from rule
+    const paths = rule.length ? rule.http.paths.filter(p => p.path !== '/').map(p => p.path) : [];
+    const deployPath = kubectl.ingressPath(branch.name);
+
+    // If paths don't include branch name than add path
+    if ( !paths.includes(deployPath) ) {
+      paths.push(deployPath);
     }
 
-    kubectl.baseIngress(config, rules);
+    // Update the ingress
+    kubectl.baseIngress(config, kubectl.ingressRule(config, paths));
     execSync(`kubectl apply -f ${ingress.path} ${namespaceFlag}`);
+
   } catch (error) {
-    die(`There was an error deploying the image to gcp: ${error}`);
+    die('There was an error deploying the image to gcp', error);
   }
   log('Ingress updated');
 }

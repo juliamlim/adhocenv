@@ -1,15 +1,21 @@
 const { execSync } = require('child_process');
-const { log, die } = require('../lib/utils');
+const { die } = require('../lib/utils');
+const kubectl = require('../lib/kubectl');
+const gcloud = require('../lib/gcloud');
 
 module.exports = (config = {}) => {
+  const { ip } = config.kubectl;
+
   try {
-    const namespace = execSync(`kubectl get namespace ${config.namespace} -o=jsonpath='{.metadata.name}'`);
-    if (namespace.length) {
-      execSync(`kubectl delete namespace ${config.namespace}`, {stdio: 'inherit'});
+    kubectl.execCheck('namespaces', config.namespace, {
+      remove: `kubectl delete namespace ${config.namespace}`
+    });
+
+    // Check to see if static ip exists
+    if (!config.flags.skipIp && gcloud.ipExists(ip)) {
+      execSync(`gcloud compute addresses delete ${ip} --global`, {stdio: 'inherit'});
     }
-    execSync(`gcloud compute addresses delete ${config.kubectl.ip} --global`, {stdio: 'inherit'});
   } catch (error) {
    die(error);
   }
-  log('Teardown complete', 'blue');
 }

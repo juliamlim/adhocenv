@@ -16,8 +16,9 @@ $ ${text('node ./path/to/gb-autodeploy', 'white')} ${text('<command>', 'cyan')} 
 Commands:
 
 ${text('init', 'cyan')}       Set up autodeploy for a new client
-${text('deploy', 'cyan')}     Deploy current branch to gcp
-${text('teardown', 'cyan')}   ${text('WARNING', 'yellow')} This removes the everything under the namespace, and is irreversible
+${text('deploy', 'cyan')}     Deploy the current branch to gcp
+${text('remove', 'cyan')}     Remove a specific branch from gcp (branch can be defined in flag)
+${text('teardown', 'cyan')}   ${text('WARNING', 'yellow')} This removes the everything under the namespace, and is ${text('irreversible', 'bold')}
 ${text('help', 'cyan')}       List commands
 
 Options:
@@ -27,7 +28,12 @@ ${text('--namespace[=string]', 'blue')}   Flag to change the namespace your work
 
 Specific script flags:
   ${text('deploy', 'cyan')}:
-    ${text('--skip-build[=boolean]', 'blue')}  Skips the build step in deploy.
+    ${text('--skip-build', 'blue')}   Skips the build step in deploy.
+    ${text('--skip-docker', 'blue')}  Skips the build step in deploy.
+
+  ${text('remove', 'cyan')}:
+    ${text('--branch[=string]', 'blue')}  Define what branch you want to remove, if not defined will remove current branch.
+
 `;
 
 module.exports = () => {

@@ -3,18 +3,14 @@ const { log, die, cmdText } = require('../lib/utils');
 
 let config = require(`${process.cwd()}/.autodeploy.json`) || null;
 
-const flagDefaults = {
-  imageHost: 'gcr.io',
-  build: 'production',
-};
-
 module.exports = (cmd, flags) => {
   return new Promise((resolve) => {
     if (cmd !== 'help') {
       // Configure the data
       // @todo setup script if no
       // config = !config ? require('./setup')() : config;
-      flags = { ...flagDefaults, ...flags };
+      flags = parseFlags(flags);
+      config.namespace = flags.namespace ? flags.namespace : config.namespace;
 
       log(`Starting up autodeploy with the ${config.namespace} namespace`);
 
@@ -25,7 +21,8 @@ module.exports = (cmd, flags) => {
       config.imagePath = setImagePath(config, flags.imageHost);
     }
 
-    resolve({...config, flags});
+
+    resolve(configOverride(config, flags));
   });
 };
 
@@ -60,6 +57,38 @@ getConsoleProject = () => {
 }
 
 /**
+ * Parse flags in the cmd
+ *
+ * @returns {Object} Flags for script
+ */
+parseFlags = (flags = {}) => {
+  return {
+    ...flags,
+    imageHost: flags.imageHost || 'gcr.io',
+    build: flags.build || 'production',
+    skipBuild: typeof flags.skipBuild === 'string' || false,
+    skipDocker: typeof flags.skipDocker === 'string' || false,
+    skipIp: typeof flags.skipIp === 'string' || false,
+  }
+};
+
+/**
+ * Set config values and flag overrides
+ *
+ * @returns {Object} Config
+ */
+configOverride = (config, flags) => {
+  const { namespace, branch } = flags;
+
+  return {
+    ...config,
+    namespace: namespace || config.namespace,
+    branch: branch ? { name: branch.toLowerCase() } : config.branch,
+    flags,
+  };
+}
+
+/**
  * Configure image path
  *
  * @param {Object} config Config information
@@ -82,8 +111,10 @@ setKubectlValues = (config, flags) => {
   const { namespace } = config;
   return {
     ingress: {
+      fanout: flags.fanout || `${namespace}-fanout`,
       name: flags.ingress || `${namespace}-ingress`,
       path: `${process.cwd()}/autodeploy/lib/ingress.json`,
+      nginx: `${process.cwd()}/autodeploy/lib/nginx-ingress.json`,
     },
     ip: flags.staticIp || `${namespace}-static-ip`,
     nginx: flags.nginx || `${namespace}-nginx`,

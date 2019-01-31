@@ -13,7 +13,7 @@ module.exports = (config) => {
       execSync(`docker push ${config.imagePath}`);
     }
   } catch (error) {
-    die(`There was an error creating and publishing the docker image, ${error}`);
+    die('There was an error creating and publishing the docker image', error);
   }
   log(`Image ${name}:${hash} published`);
 };

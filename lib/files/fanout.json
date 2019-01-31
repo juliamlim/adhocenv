@@ -1,0 +1,32 @@
+{
+	"kind": "Ingress",
+	"apiVersion": "extensions/v1beta1",
+	"metadata": {
+		"name": "fanout",
+		"namespace": "namespace",
+		"labels": {
+			"app.kubernetes.io/name": "namespace",
+			"app.kubernetes.io/part-of": "namespace"
+		},
+		"annotations": {
+			"nginx.ingress.kubernetes.io/rewrite-target": "/"
+		}
+	},
+	"spec": {
+		"rules": [
+			{
+				"http": {
+					"paths": [
+						{
+							"path": "/",
+							"backend": {
+								"serviceName": "ingress-nginx",
+								"servicePort": 80
+							}
+						}
+					]
+				}
+			}
+		]
+	}
+}

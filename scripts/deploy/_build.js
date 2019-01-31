@@ -11,11 +11,9 @@ module.exports = (config) => {
   log(`Starting ${config.flags.build} build`, 'green');
   try {
     const buildScript = config.deployments[config.flags.build].build || config.deployments[config.flags.build].default;
-    if (!config.flags['skip-build']) {
-      execSync(buildScript, {stdio: 'inherit'});
-    }
+    execSync(buildScript, {stdio: 'inherit'});
   } catch (error) {
-    die('Failed building the project');
+    die('Failed building the project', error);
   }
-  log(`Finished build`);
+  log('Finished build');
 };
