@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-const { log, die } = require('./lib/utils');
+const { log, kebabToCamel, die } = require('./lib/utils');
 
 const cmd = process.argv[2];
 const flags = process.argv.slice(3).reduce((json, flag) => {
   const [, key, value] = flag.match(/--([^=\s]*)?=?(.*)/);
   // Convert kebab flags to camelCase
-  json[key.replace(/-([a-z])/g, g => g[1].toUpperCase())] = value;
+  json[kebabToCamel(key)] = value;
   return json;
 }, {});
 

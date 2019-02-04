@@ -27,6 +27,9 @@ ${text('--image-host[=string]', 'blue')}  The host that stores docker images. De
 ${text('--namespace[=string]', 'blue')}   Flag to change the namespace your working under.
 
 Specific script flags:
+  ${text('init', 'cyan')}:
+    ${text('--static-ip[=string]', 'blue')}   Define IP address to reserve in GCP.
+
   ${text('deploy', 'cyan')}:
     ${text('--skip-build', 'blue')}   Skips the build step in deploy.
     ${text('--skip-docker', 'blue')}  Skips the build step in deploy.

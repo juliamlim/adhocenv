@@ -9,7 +9,7 @@
 			"app.kubernetes.io/part-of": "namespace"
 		},
 		"annotations": {
-			"nginx.ingress.kubernetes.io/rewrite-target": "/"
+      "kubernetes.io/ingress.global-static-ip-name": "ip"
 		}
 	},
 	"spec": {

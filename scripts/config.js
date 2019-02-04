@@ -69,6 +69,7 @@ parseFlags = (flags = {}) => {
     skipBuild: typeof flags.skipBuild === 'string' || false,
     skipDocker: typeof flags.skipDocker === 'string' || false,
     skipIp: typeof flags.skipIp === 'string' || false,
+    staticIp: flags.staticIp || false,
   }
 };
 
