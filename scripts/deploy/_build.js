@@ -1,12 +1,7 @@
-/** Deploy Script - Build */
-
+// Deploy: build
 const { execSync } = require('child_process');
 const { log, die } = require('../../lib/utils');
-/**
- * Build and prepare the necessary files for the docker image.
- *
- * @param {Object} config The object created by `config.js`
- */
+
 module.exports = (config) => {
   log(`Starting ${config.flags.build} build`, 'green');
   try {

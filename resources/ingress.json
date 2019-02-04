@@ -1,0 +1,14 @@
+{
+  "apiVersion": "extensions/v1beta1",
+  "kind": "Ingress",
+  "metadata": {
+    "annotations": {
+      "kubernetes.io/ingress.global-static-ip-name": "{{ip}}"
+    },
+    "name": "{{ingress.name}}",
+    "namespace": "{{namespace}}"
+  },
+  "spec": {
+    "rules": []
+  }
+}

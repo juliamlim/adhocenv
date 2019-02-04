@@ -1,5 +1,4 @@
-/** Deploy Script */
-const { log } = require('../../lib/utils');
+// Deploy script
 
 module.exports = (config) => {
   if (!config.flags.skipBuild) require('./_build')(config);

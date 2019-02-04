@@ -11,7 +11,7 @@ ${text('  ', 'inverse')}${text('  ', 'bgCyan')}  ${text('  ', 'inverse')}  Versi
 
 const help = `${gb}
 
-$ ${text('node ./path/to/gb-autodeploy', 'white')} ${text('<command>', 'cyan')} ${text('--', 'white')} ${text('[options]', 'blue')}
+$ ${text('ahenv', 'white')} ${text('<command>', 'cyan')} ${text('--', 'white')} ${text('[options]', 'blue')}
 
 Commands:
 

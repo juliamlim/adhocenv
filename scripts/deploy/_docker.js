@@ -1,5 +1,4 @@
-/** Deploy Script - Docker */
-
+// Deploy: docker
 const { execSync } = require('child_process');
 const { die } = require('../../lib/utils');
 

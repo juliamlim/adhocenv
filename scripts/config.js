@@ -1,7 +1,7 @@
 const { execSync } = require('child_process');
 const { log, die, cmdText } = require('../lib/utils');
 
-let config = require(`${process.cwd()}/.autodeploy.json`) || null;
+let config = require(`${process.cwd()}/ahenv.json`) || null;
 
 module.exports = (cmd, flags) => {
   return new Promise((resolve) => {
@@ -10,7 +10,6 @@ module.exports = (cmd, flags) => {
       // @todo setup script if no
       // config = !config ? require('./setup')() : config;
       flags = parseFlags(flags);
-      config.namespace = flags.namespace ? flags.namespace : config.namespace;
 
       log(`Starting up autodeploy with the ${config.namespace} namespace`);
 
@@ -112,7 +111,6 @@ setKubectlValues = (config, flags) => {
   const { namespace } = config;
   return {
     ingress: {
-      fanout: flags.fanout || `${namespace}-fanout`,
       name: flags.ingress || `${namespace}-ingress`,
       path: `${process.cwd()}/autodeploy/lib/ingress.json`,
       nginx: `${process.cwd()}/autodeploy/lib/nginx-ingress.json`,
