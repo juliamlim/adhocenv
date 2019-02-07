@@ -3,10 +3,10 @@
   "kind": "Ingress",
   "metadata": {
     "annotations": {
-      "kubernetes.io/ingress.global-static-ip-name": "{{ip}}"
+      "kubernetes.io/ingress.global-static-ip-name": ""
     },
-    "name": "{{ingress.name}}",
-    "namespace": "{{namespace}}"
+    "name": "",
+    "namespace": ""
   },
   "spec": {
     "rules": []

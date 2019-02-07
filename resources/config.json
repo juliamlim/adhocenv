@@ -1,0 +1,9 @@
+{
+  "namespace": "default",
+  "builds": [
+    {
+      "name": "default",
+      "command": "npm run build"
+    }
+  ]
+}

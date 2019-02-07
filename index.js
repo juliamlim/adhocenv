@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const path = require('path');
 const { log, kebabToCamel, die } = require('./lib/utils');
 
 const cmd = process.argv[2];
@@ -10,7 +9,6 @@ const flags = process.argv.slice(3).reduce((json, flag) => {
   json[kebabToCamel(key)] = value;
   return json;
 }, {});
-const root = path.dirname(__filename);
 
 // Configure the data needed in the script
 require('./scripts/config')(cmd, flags).then((config) => {
@@ -22,7 +20,7 @@ require('./scripts/config')(cmd, flags).then((config) => {
     case 'remove':
     case 'teardown':
       log(`Start ${cmd} process`, 'green');
-      return require(`./scripts/${cmd}`)({...config, root});
+      return require(`./scripts/${cmd}`)(config);
     case 'help':
       return require('./scripts/help')();
     default:

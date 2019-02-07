@@ -1,28 +1,52 @@
+// Config script
+const path = require('path');
 const { execSync } = require('child_process');
 const { log, die, cmdText } = require('../lib/utils');
 
-let config = require(`${process.cwd()}/ahenv.json`) || null;
+// Merge default config template and project config
+let config = Object.assign(require('../resources/config.json'), require(`${process.cwd()}/ahenv.json`));
 
 module.exports = (cmd, flags) => {
   return new Promise((resolve) => {
     if (cmd !== 'help') {
       // Configure the data
-      // @todo setup script if no
-      // config = !config ? require('./setup')() : config;
-      flags = parseFlags(flags);
-
       log(`Starting up autodeploy with the ${config.namespace} namespace`);
 
-      // Set other data values
+      // // @todo setup script if no config available
+      // config = !config ? require('./setup')() : config;
+
+      // Set data values
+      config.root = path.dirname(require.main.filename);
       config.branch = getBranchValues();
       config.project = getConsoleProject();
       config.kubectl = setKubectlValues(config, flags);
       config.imagePath = setImagePath(config, flags.imageHost);
+
+      // Parse flag values
+      flags = parseFlags(flags);
+
+      // Reconfigure config with flag values
+      config = configOverride(config, flags);
     }
 
-
-    resolve(configOverride(config, flags));
+    resolve(config);
   });
+};
+
+/**
+ * Set config values and flag overrides
+ *
+ * @returns {Object} Config
+ */
+configOverride = (config, flags) => {
+  const { namespace, branch } = flags;
+
+  return {
+    ...config,
+    namespace: namespace || config.namespace,
+    branch: branch ? { name: branch.toLowerCase() } : config.branch,
+    flags,
+  };
 };
 
 /**
@@ -39,7 +63,7 @@ getBranchValues = () => {
   } catch (error) {
     die(`Could not parse branch data from ${cmdText(cmd)}\n${error}. Verify you are on a branch.`);
   }
-}
+};
 
 /**
  * Get the name of the gcloud project
@@ -53,7 +77,7 @@ getConsoleProject = () => {
   } catch (error) {
     die(`Could not return project name in ${cmdText(cmd)}\n${error}`);
   }
-}
+};
 
 /**
  * Parse flags in the cmd
@@ -72,21 +96,6 @@ parseFlags = (flags = {}) => {
   }
 };
 
-/**
- * Set config values and flag overrides
- *
- * @returns {Object} Config
- */
-configOverride = (config, flags) => {
-  const { namespace, branch } = flags;
-
-  return {
-    ...config,
-    namespace: namespace || config.namespace,
-    branch: branch ? { name: branch.toLowerCase() } : config.branch,
-    flags,
-  };
-}
 
 /**
  * Configure image path
@@ -110,11 +119,7 @@ setImagePath = (config, host) => {
 setKubectlValues = (config, flags) => {
   const { namespace } = config;
   return {
-    ingress: {
-      name: flags.ingress || `${namespace}-ingress`,
-      path: `${process.cwd()}/autodeploy/lib/ingress.json`,
-      nginx: `${process.cwd()}/autodeploy/lib/nginx-ingress.json`,
-    },
+    ingress: flags.ingress || `${namespace}-ingress`,
     ip: flags.staticIp || `${namespace}-static-ip`,
     nginx: flags.nginx || `${namespace}-nginx`,
   }
