@@ -7,17 +7,18 @@ module.exports = (config = {}) => {
   const { ingress, ip } = config.kubectl;
 
   try {
+    log('Updating ingress');
     kubectl.execCheck('ingress', ingress, { namespace }).then((res) => {
-      const currentIng = res.items.filter(item => item.metadata && item.metadata.name === ingress);
-      const currentRules = currentIng.length ? currentIng.spec.rules : [];
+      const currentIng = res.items.find(item => item.metadata && item.metadata.name === ingress);
+      const currentRules = currentIng ? currentIng.spec.rules : [];
 
       let rule = currentRules.length ? host
-        ? currentRules.filter(rule => rule.host === host)
-        : currentRules.filter(rule => !('host' in rule))
-        : [];
+        ? currentRules.find(rule => rule.host === host)
+        : currentRules.find(rule => !('host' in rule))
+        : undefined;
 
       // Grab deployment names ( defined by the branch name )
-      let paths = rule.length ? rule.http.paths.map(path => path.backend.serviceName) : [];
+      let paths = rule ? rule.http.paths.map(path => path.backend.serviceName) : [];
 
       // Adds deployment to ingress if not present
       if (!paths.includes(branch.name)) {

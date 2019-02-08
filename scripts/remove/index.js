@@ -1,4 +1,4 @@
-/** Remove-Branch Script */
+// Remove script
 const { log } = require('../../lib/utils');
 
 module.exports = (config) => {

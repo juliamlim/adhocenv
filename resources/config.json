@@ -1,9 +1,9 @@
 {
   "namespace": "default",
-  "builds": [
-    {
-      "name": "default",
-      "command": "npm run build"
+  "builds": {
+    "default": {
+      "cmd": "npm run build"
     }
-  ]
+  },
+  "port": 4300
 }

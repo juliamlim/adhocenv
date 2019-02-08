@@ -3,12 +3,20 @@ const { execSync } = require('child_process');
 const { log, die } = require('../../lib/utils');
 
 module.exports = (config) => {
-  log(`Starting ${config.flags.build} build`, 'green');
+  if (config.flags.skipBuild) return log('Skipped build');
+
+  const build = getBuild(config) || 'default';
+  log(`Starting ${build} build`, 'green');
   try {
-    const buildScript = config.deployments[config.flags.build].build || config.deployments[config.flags.build].default;
+    const buildScript = config.builds[build].cmd || config.builds.default.cmd;
     execSync(buildScript, {stdio: 'inherit'});
   } catch (error) {
     die('Failed building the project', error);
   }
-  log('Finished build');
+  return log('Finished build');
 };
+
+getBuild = config => {
+  const { builds = {} } = config;
+  return config.flags.build ? config.flags.build : Object.keys(builds).find(b => builds[b].default);
+}

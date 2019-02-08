@@ -1,5 +1,4 @@
-/** Deploy Script - Container */
-
+// Deploy: container
 const { execSync } = require('child_process');
 const { die } = require('../../lib/utils');
 const kubectl = require('../../lib/kubectl');
@@ -16,6 +15,7 @@ module.exports = (config = {}) => {
         execSync(`kubectl run ${branch.name} --image=${imagePath} --port=${port} ${namespaceFlag}`);
         execSync(`kubectl expose deployment ${branch.name} --target-port=${port} --port=80 --type=NodePort ${namespaceFlag}`);
       }
+      log('Finished deploying image');
     });
   } catch (error) {
     die('There was an error deploying the image to gcp', error);

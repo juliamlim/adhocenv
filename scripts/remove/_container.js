@@ -1,5 +1,4 @@
-/** Deploy Script - Container */
-
+// Remove: container
 const { execSync } = require('child_process');
 const { die } = require('../../lib/utils');
 const kubectl = require('../../lib/kubectl');

@@ -1,6 +1,6 @@
 {
   "name": "adhocenv",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Scripts to set up ad hoc testing environments for git projects.",
   "main": "index.js",
   "scripts": {

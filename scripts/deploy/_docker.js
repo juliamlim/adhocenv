@@ -1,9 +1,11 @@
 // Deploy: docker
 const { execSync } = require('child_process');
-const { die } = require('../../lib/utils');
+const { camelToScreaming, die } = require('../../lib/utils');
 
 module.exports = (config) => {
-  log('Building docker image')
+  if (config.flags.skipDocker) return log('Skipped Docker image build');
+
+  log('Building docker image');
   const { name, hash } = config.branch;
   try {
     // @todo We need to define all the variables that can be accessed by the dockerfile here
@@ -11,11 +13,27 @@ module.exports = (config) => {
     // Branch name
     // Build ( prod, dev, etc.. )
     // Build command (only the command for the build)
-    execSync(`docker build -t ${config.imagePath} .`);
+    const vars = dockerVariables(dockerValues(config));
+
+    execSync(`docker build -t ${config.imagePath} ${vars} .`, { stdio: 'inherit' });
     execSync('gcloud auth configure-docker');
-    execSync(`docker push ${config.imagePath}`);
+    execSync(`docker push ${config.imagePath}`, { stdio: 'inherit' });
   } catch (error) {
     die('There was an error creating and publishing the docker image', error);
   }
-  log(`Image ${name}:${hash} published`);
+
+  return log(`Image ${name}:${hash} published`);
 };
+
+dockerValues = config => {
+  const { name } = config.branch;
+
+  return {
+    branch: name
+  };
+}
+
+dockerVariables = obj => {
+  const values = Object.keys(obj).map(k => `--build-arg ${camelToScreaming(k)}=${obj[k]}`);
+  return values.join(' ');
+}

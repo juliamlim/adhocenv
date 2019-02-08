@@ -15,15 +15,15 @@ module.exports = (cmd, flags) => {
       // // @todo setup script if no config available
       // config = !config ? require('./setup')() : config;
 
+      // Parse flag values
+      flags = parseFlags(flags);
+
       // Set data values
       config.root = path.dirname(require.main.filename);
       config.branch = getBranchValues();
       config.project = getConsoleProject();
       config.kubectl = setKubectlValues(config, flags);
       config.imagePath = setImagePath(config, flags.imageHost);
-
-      // Parse flag values
-      flags = parseFlags(flags);
 
       // Reconfigure config with flag values
       config = configOverride(config, flags);
@@ -88,7 +88,7 @@ parseFlags = (flags = {}) => {
   return {
     ...flags,
     imageHost: flags.imageHost || 'gcr.io',
-    build: flags.build || 'production',
+    build: flags.build || false,
     skipBuild: typeof flags.skipBuild === 'string' || false,
     skipDocker: typeof flags.skipDocker === 'string' || false,
     skipIp: typeof flags.skipIp === 'string' || false,
