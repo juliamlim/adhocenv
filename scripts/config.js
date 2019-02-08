@@ -18,15 +18,18 @@ module.exports = (cmd, flags) => {
       // Parse flag values
       flags = parseFlags(flags);
 
+      config.flags = flags;
+
       // Set data values
       config.root = path.dirname(require.main.filename);
       config.branch = getBranchValues();
       config.project = getConsoleProject();
-      config.kubectl = setKubectlValues(config, flags);
-      config.imagePath = setImagePath(config, flags.imageHost);
+      config.kubectl = setKubectlValues(config, config.flags);
+      config.imagePath = setImagePath(config, config.flags.imageHost);
+      config.build = getBuild(config);
 
       // Reconfigure config with flag values
-      config = configOverride(config, flags);
+      config = configOverride(config);
     }
 
     resolve(config);
@@ -38,7 +41,8 @@ module.exports = (cmd, flags) => {
  *
  * @returns {Object} Config
  */
-configOverride = (config, flags) => {
+configOverride = (config) => {
+  const { flags } = config;
   const { namespace, branch } = flags;
 
   return {
@@ -64,6 +68,11 @@ getBranchValues = () => {
     die(`Could not parse branch data from ${cmdText(cmd)}\n${error}. Verify you are on a branch.`);
   }
 };
+
+getBuild = config => {
+  const { builds = {} } = config;
+  return config.flags.build ? config.flags.build : Object.keys(builds).find(b => builds[b].default);
+}
 
 /**
  * Get the name of the gcloud project

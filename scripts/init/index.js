@@ -1,5 +1,4 @@
 // Init script
-module.exports = (config) => {
-  require('./_ip')(config);
-  require('./_kubernetes')(config);
-};
+module.exports = (config) => new Promise(
+  (resolve) => resolve(require('./_ip')(config)))
+  .then(() => require('./_kubernetes')(config));

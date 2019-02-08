@@ -13,7 +13,7 @@ module.exports = (config) => {
     // Branch name
     // Build ( prod, dev, etc.. )
     // Build command (only the command for the build)
-    const vars = dockerVariables(dockerValues(config));
+    const vars = dockerArgs(config);
 
     execSync(`docker build -t ${config.imagePath} ${vars} .`, { stdio: 'inherit' });
     execSync('gcloud auth configure-docker');
@@ -25,15 +25,21 @@ module.exports = (config) => {
   return log(`Image ${name}:${hash} published`);
 };
 
-dockerValues = config => {
-  const { name } = config.branch;
-
+dockerValues = (config) => {
   return {
-    branch: name
+    BUILD: config.build || 'default',
+    BRANCH: config.branch.name || null
   };
+};
+
+dockerArgs = (config = {}) => {
+  const { docker = {} } = config;
+  return docker.args && docker.args.length ? docker.args.map(a => `--build-arg ${a.toUpperCase()}=${dockerValues(config)[a.toUpperCase()]}`).join(' ') : '';
 }
 
 dockerVariables = obj => {
   const values = Object.keys(obj).map(k => `--build-arg ${camelToScreaming(k)}=${obj[k]}`);
   return values.join(' ');
 }
+
+

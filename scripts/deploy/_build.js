@@ -5,7 +5,7 @@ const { log, die } = require('../../lib/utils');
 module.exports = (config) => {
   if (config.flags.skipBuild) return log('Skipped build');
 
-  const build = getBuild(config) || 'default';
+  const { build = 'default' } = config;
   log(`Starting ${build} build`, 'green');
   try {
     const buildScript = config.builds[build].cmd || config.builds.default.cmd;
@@ -15,8 +15,3 @@ module.exports = (config) => {
   }
   return log('Finished build');
 };
-
-getBuild = config => {
-  const { builds = {} } = config;
-  return config.flags.build ? config.flags.build : Object.keys(builds).find(b => builds[b].default);
-}
