@@ -1,0 +1,29 @@
+{
+	"apiVersion": "apps/v1beta1",
+	"kind": "Deployment",
+	"metadata": {
+    "name": branch,
+    "namespace": namespace
+	},
+	"spec": {
+		"replicas": 3,
+		"template": {
+			"spec": {
+				"containers": [
+					{
+            "name": branch,
+						"readinessProbe": {
+							"httpGet": {
+								"port": 8080,
+								"path": "/readiness",
+								"scheme": "HTTP"
+							},
+							"initialDelaySeconds": 30,
+							"periodSeconds": 10
+						}
+					}
+				]
+			}
+		}
+	}
+}
