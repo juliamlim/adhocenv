@@ -15,7 +15,6 @@ module.exports = (config = {}) => {
         execSync(`kubectl run ${branch.name} --image=${imagePath} --port=${port} ${namespaceFlag}`);
         execSync(`kubectl expose deployment ${branch.name} --target-port=${port} --port=80 --type=NodePort ${namespaceFlag}`);
       }
-      kubectl.yamlApply(`${config.root}/resources/deployment.json`, () => JSON.stringify(kubectl.generateDeployment(branch.name, namespace, imagePath)));
       log('Finished deploying image');
     });
   } catch (error) {
