@@ -1,0 +1,18 @@
+{
+  "commands": {
+    "deploy":  "./scripts/deploy.js",
+    "release": {
+      "description": "Creates an new release and auto assigns version",
+      "path": "./scripts/release.js"
+    }
+  },
+  "flags": {
+    "version": ["-v", "--version"],
+    "environment": ["-e", "--env", "--environment"],
+    "branch": {
+      "alias": ["--branch", "-br"],
+      "description": "Branch to deploy to lower environment",
+      "commands": ["deploy"]
+    }
+  }
+}
