@@ -12,6 +12,7 @@ module.exports = (config = {}) => {
       if (res.exists) {
         execSync(`kubectl set image deployment/${branch.name} ${branch.name}=${imagePath} ${namespaceFlag}`);
       } else {
+        // kubectl.fileApply(`${config.root}/resources/deployment.json`, () => kubectl.generateDeployment({ name: branch.name, namespace, image: imagePath}));
         execSync(`kubectl run ${branch.name} --image=${imagePath} --port=${port} ${namespaceFlag}`);
         execSync(`kubectl expose deployment ${branch.name} --target-port=${port} --port=80 --type=NodePort ${namespaceFlag}`);
       }

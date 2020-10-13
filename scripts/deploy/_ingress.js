@@ -30,7 +30,7 @@ module.exports = (config = {}) => {
 
       const data = { namespace, ingress, rules: [...currentRules.filter(rules => rules.host !== rule.host), rule], ip };
 
-      kubectl.yamlApply(`${config.root}/resources/ingress.json`, (str) => JSON.stringify(Object.assign(
+      kubectl.fileApply(`${config.root}/resources/ingress.json`, (str) => JSON.stringify(Object.assign(
         JSON.parse(str),
         kubectl.generateIngress(data)
       )));
