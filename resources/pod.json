@@ -1,0 +1,29 @@
+{
+	"apiVersion": "v1",
+	"kind": "Pod",
+	"metadata": {
+		"name": "cvs-gcp-test",
+		"namespace": "cvs"
+	},
+	"spec": {
+		"containers": [
+			{
+				"image": "gcr.io/services-165213/cvs-gcp-test:4f260de7",
+				"name": "cvs-gcp-test",
+				"ports": [
+					{
+						"containerPort": 4200,
+						"protocol": "TCP"
+					}
+				],
+				"readinessProbe": {
+					"tcpSocket": {
+						"port": 8080
+					},
+					"initialDelaySeconds": 30,
+					"periodSeconds": 10
+				}
+			}
+		]
+	}
+}
